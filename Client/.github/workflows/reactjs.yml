@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted2
+    runs-on: [self-hosted, client]
 
     strategy:
       matrix:

@@ -18,7 +18,7 @@ jobs:
       - name: 🔍 Debug key presence
         run: |
           if [ -z "${{ secrets.EC2_SSH_KEY }}" ]; then
-            echo "❌ SSH key is empty! "
+            echo "❌ SSH key is empty!"
             exit 1
           else
             echo "✅ SSH key is present."

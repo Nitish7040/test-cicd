@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css'; // Import the CSS file for styling
 
 const App = () => {
   const [helloMessage, setHelloMessage] = useState('');
@@ -26,10 +27,12 @@ const App = () => {
   }, []);
 
   return (
-    <div>
-      <h1>React Frontend</h1>
-      <p>Message from /api/hello: {helloMessage}</p>
-      <p>Message from /api/msg: {msg}</p>
+    <div className="app-container">
+      <h1 className="header">React Frontend</h1>
+      <div className="message-container">
+        <p className="hello-message">Message from /api/hello: {helloMessage}</p>
+        <p className="msg-message">Message from /api/msg: {msg}</p>
+      </div>
     </div>
   );
 };

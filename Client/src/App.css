@@ -1,0 +1,64 @@
+/* App.css */
+
+/* Overall container */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f8ff;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  /* Header style */
+  .header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #4CAF50;
+  }
+  
+  /* Container for messages */
+  .message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  /* Frontend message style */
+  .hello-message {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Backend message style */
+  .msg-message {
+    background-color: #ffecb3;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Hover effect for both messages */
+  .hello-message:hover {
+    background-color: #80deea;
+    transform: scale(1.05);
+  }
+  
+  .msg-message:hover {
+    background-color: #ffe082;
+    transform: scale(1.05);
+  }
+  

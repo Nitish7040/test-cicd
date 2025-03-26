@@ -36,7 +36,7 @@ jobs:
             cd ~/test
 
             echo "📦 Installing server dependencies"
-            cd server
+            cd Server
             npm ci
 
             echo "🚀 Restarting backend using PM2"
@@ -44,7 +44,7 @@ jobs:
             cd ..
 
             echo "📦 Installing client dependencies"
-            cd client
+            cd Client
             npm ci
 
             echo "⚙️ Building React app"

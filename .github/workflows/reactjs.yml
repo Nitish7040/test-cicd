@@ -1,38 +1,51 @@
-name: Client CI/CD
+name: Client Deploy
 
 on:
   push:
-    branches: [ "main" ]
     paths:
       - 'client/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'client/**'
+    branches:
+      - main
 
 jobs:
-  build:
-    runs-on: [self-hosted, client]
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
-    defaults:
-      run:
-        working-directory: client
+  deploy-client:
+    name: Deploy React Frontend
+    runs-on: [self-hosted, server]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          node-version: '18'
 
       - name: Install Dependencies
-        run: npm ci
+        working-directory: ./client
+        run: npm install
 
-      - name: Build Project
+      - name: Build React App
+        working-directory: ./client
         run: npm run build
+
+      - name: Copy React Build to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "client/build/*"
+          target: "~/app/client/build"
+
+      - name: Start/Restart React Frontend with PM2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            npm install -g serve pm2
+            pm2 delete client || true
+            pm2 start "serve -s ~/app/client/build -l 3000" --name client
+            pm2 save

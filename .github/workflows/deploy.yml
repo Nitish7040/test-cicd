@@ -14,31 +14,32 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
- # Step 2: Copy code to EC2
-- name: 🚀 Copy project to EC2
-uses: appleboy/scp-action@v0.1.7
-with:
-  host: ${{ secrets.EC2_HOST }}
-  username: ${{ secrets.EC2_USERNAME }}
-  key: ${{ secrets.EC2_SSH_KEY }}
-  source: "."
-  target: "~/test"          # Make sure this folder exists on EC2
+      # Step 2: 🔍 Debug Key Presence (optional but helpful)
+      - name: 🔍 Debug key presence
+        run: |
+          if [ -z "${{ secrets.EC2_SSH_KEY }}" ]; then
+            echo "❌ SSH key is empty!"
+            exit 1
+          else
+            echo "✅ SSH key is present."
+          fi
 
-# Step 3: Debug Key Presence (optional but helpful)
-- name: 🔍 Debug key presence
-run: |
-  if [ -z "${{ secrets.EC2_SSH_KEY }}" ]; then
-    echo "❌ SSH key is empty!"
-    exit 1
-  else
-    echo "✅ SSH key is present."
-  fi
-      # Step 3: SSH into EC2 and deploy
+      # Step 3: 🚀 Copy code to EC2
+      - name: 🚀 Copy project to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "."
+          target: "~/test"          # Ensure this path exists or will be created
+
+      # Step 4: 🛠️ SSH into EC2 and deploy
       - name: 🛠️ Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "📂 Switching to test directory"

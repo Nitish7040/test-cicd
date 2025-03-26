@@ -4,12 +4,12 @@ const app = express();
 
 // Allow frontend origin
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
 app.use(express.json());
-console.log("hello");
+// console.log("hello");
 
 
 app.get('/api/hello', (req, res) => {

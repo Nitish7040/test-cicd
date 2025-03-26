@@ -32,6 +32,11 @@ app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from backend!' });
 });
 
+// New route for "I am Nitish" message
+app.get('/api/msg', (req, res) => {
+  res.json({ message: 'I am Nitish' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

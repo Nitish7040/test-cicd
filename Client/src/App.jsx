@@ -2,24 +2,28 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/hello', {
+    fetch('/api/hello', {
       method: 'GET',
-      credentials: 'include' // Optional: only if you’re using cookies/auth
+      credentials: 'include'
     })
-      .then(res => res.json())
-      .then(data => setMessage(data.message));
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => setMessage(data.message))
+      .catch(err => {
+        console.error('Fetch error:', err);
+        setError('Failed to fetch message from server.');
+      });
   }, []);
-  
 
   return (
     <div>
-      <h1>Frontend + Backend</h1>
-      <h2>hello...!</h2>
-      <h3>Hyy...!!!!!</h3>
-   
-      <p>{message}</p>
+      <h1>My Fullstack App</h1>
+      <p>{message || error}</p>
     </div>
   );
 }

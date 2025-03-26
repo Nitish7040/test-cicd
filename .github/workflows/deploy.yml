@@ -24,6 +24,15 @@ jobs:
             source: "."
             target: "~/test"          # Make sure this folder exists on EC2
 
+            - name: 🔍 Debug key presence
+            run: |
+              if [ -z "${{ secrets.EC2_SSH_KEY }}" ]; then
+                echo "❌ SSH key is empty!"
+                exit 1
+              else
+                echo "✅ SSH key is present."
+              fi
+
       # Step 3: SSH into EC2 and deploy
       - name: 🛠️ Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.0

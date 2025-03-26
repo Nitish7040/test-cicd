@@ -7,57 +7,56 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
     steps:
       # Step 1: Checkout Repo
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Install Node.js
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
+      # Step 2: Copy code to EC2
+      - name: 🚀 Copy project to EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
-          node-version: '18'
-          cache: 'npm'
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "."                    # Copies entire repo
+          target: "~/test"              # Make sure this folder exists on EC2
 
-      # Step 3: Install backend dependencies and restart server
-      - name: 🚀 Setup Backend (Node.js)
-        run: |
-          echo "📂 Switching to server directory"
-          cd server
+      # Step 3: SSH into EC2 and deploy
+      - name: 🛠️ Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "📂 Switching to test directory"
+            cd ~/test
 
-          echo "📦 Installing server dependencies"
-          npm ci
+            echo "📦 Installing server dependencies"
+            cd server
+            npm ci
 
-          echo "🚀 Restarting backend using PM2"
-          pm2 delete backend || true
-          pm2 start npm --name backend -- start
+            echo "🚀 Restarting backend using PM2"
+            pm2 delete backend || true
+            pm2 start npm --name backend -- start
+            cd ..
 
-      # Step 4: Install frontend dependencies and build app
-      - name: 🌐 Setup Frontend (React)
-        run: |
-          echo "📂 Switching to client directory"
-          cd client
+            echo "📦 Installing client dependencies"
+            cd client
+            npm ci
 
-          echo "📦 Installing client dependencies"
-          npm ci
+            echo "⚙️ Building React app"
+            npm run build
 
-          echo "⚙️ Building React app"
-          npm run build
+            echo "🌐 Serving frontend with PM2"
+            pm2 delete frontend || true
+            pm2 serve build 3000 --name frontend --spa
+            cd ..
 
-      # Step 5: Serve frontend using PM2
-      - name: 🚀 Serve Frontend with PM2
-        run: |
-          cd client
-          pm2 delete frontend || true
-          pm2 serve build 3000 --spa --name frontend
+            echo "💾 Saving PM2 process list"
+            pm2 save
 
-      # Step 6: Save PM2 process list
-      - name: 💾 Save PM2 Process List
-        run: |
-          pm2 save
-
-      # Step 7: (Optional) Restart PM2 on reboot
-      - name: 🔁 Setup PM2 Startup Script (first time only)
-        run: |
-          pm2 startup systemd -u ubuntu --hp /home/ubuntu
+            echo "✅ Deployment complete!"

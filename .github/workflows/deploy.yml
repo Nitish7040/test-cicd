@@ -18,11 +18,11 @@ jobs:
       - name: 🚀 Copy project to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "."                    # Copies entire repo
-          target: "~/test"              # Make sure this folder exists on EC2
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.EC2_SSH_KEY }}
+            source: "."
+            target: "~/test"          # Make sure this folder exists on EC2
 
       # Step 3: SSH into EC2 and deploy
       - name: 🛠️ Deploy on EC2 via SSH

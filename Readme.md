@@ -144,7 +144,7 @@ jobs:
 1. Create the test folder on EC2 :-
 
 ```bash
-mkdir /path/to/your/test
+mkdir /path/to/your/test-app
 ```
 
 2. Create Nginx Configuration for React and Node.js

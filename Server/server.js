@@ -36,6 +36,9 @@ app.get('/api/hello', (req, res) => {
 app.get('/api/msg', (req, res) => {
   res.json({ message: 'I am Nitish' });
 });
+app.get('/', (req, res) => {
+  res.json({ message: 'I am server' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

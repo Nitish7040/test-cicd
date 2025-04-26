@@ -28,7 +28,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <h1 className="header">React Frontend-test</h1>
+      <h1 className="header">React Frontend-test001</h1>
       <div className="message-container">
         <p className="hello-message">Message from /api/hello: {helloMessage}</p>
         <p className="msg-message">Message from /api/msg: {msg}</p>

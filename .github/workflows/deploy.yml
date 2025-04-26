@@ -35,12 +35,17 @@ jobs:
             echo "📂 Switching to test directory"
             cd ~/test
 
+            echo "🛑 Stopping existing PM2 apps (backend, frontend, server)"
+            pm2 delete backend || echo "No backend to delete"
+            pm2 delete frontend || echo "No frontend to delete"
+            pm2 delete server || echo "No server to delete"
+
             echo "📦 Installing server dependencies"
             cd Server
             npm ci
 
-            echo "🚀 Restarting backend using PM2"
-            pm2 restart backend || pm2 start npm --name backend -- start
+            echo "🚀 Starting backend using PM2"
+            pm2 start npm --name backend -- start
             cd ..
 
             echo "📦 Installing client dependencies"
@@ -50,8 +55,13 @@ jobs:
             echo "⚙️ Building React app"
             npm run build
 
-            echo "🌐 Restarting frontend with PM2"
+            echo "🌐 Serving frontend with PM2"
             pm2 serve dist 3000 --name frontend --spa
+            cd ..
+
+            echo "🚀 Starting server using PM2"
+            cd Server
+            pm2 start npm --name server -- run server # You must have "server" script in package.json
             cd ..
 
             echo "💾 Saving PM2 process list"

@@ -196,6 +196,23 @@ Test the Nginx configuration to ensure there are no syntax errors:
 ```bash
 sudo nginx -t
 ```
+4.1 If the error like :-  
+ubuntu@ip-10-16-26-193:~$ sudo nginx -t
+2025/04/27 11:04:11 [emerg] 1830#1830: could not build server_names_hash, you should increase server_names_hash_bucket_size: 64
+nginx: configuration file /etc/nginx/nginx.conf test failed -----....
+
+Then edit the lines in nginx config file :-
+ ```bash
+sudo nano /etc/nginx/nginx.conf
+```
+Inside the http block, add this line:
+```bash
+server_names_hash_bucket_size 128;
+```
+then check again :-
+```bash
+sudo nginx -t
+```
 
 5. Restart Nginx :-
     
